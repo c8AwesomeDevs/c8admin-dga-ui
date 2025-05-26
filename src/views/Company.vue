@@ -79,12 +79,17 @@
 
 <script>
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { initializeUsers, startTokenRefreshChecker } from "@/utils/authUtils.js";
 import axios from "axios";
 
 export default {
+  name: "Company",
+  components: {
+    LoadingOverlay,
+  },
   data() {
     return {
-      page_load: false,
+      page_load: true,
       tableSearch: '',
       selectSearch: 'Company Name',
       searchOptions: ['Company Name', 'Country', 'Industry'],
@@ -98,7 +103,13 @@ export default {
       currentPage: 1,
       rowsPerPage: 10,
     };
+  },  
+  async mounted() {
+    const token = await initializeUsers();
+    await this.makeAuthenticatedRequest(token);
+    this.page_load = false;
   },
+
   computed: {
     filteredUsers() {
       if (!this.tableSearch) return this.users;
@@ -117,8 +128,15 @@ export default {
     }
   },
   methods: {
+    async makeAuthenticatedRequest(token) {
+      if (token != null) {
+        await this.getCompanies();
+      }else{
+        console.log("Unauthorized");
+      }
+    },
+
     async getCompanies() {
-      this.page_load = true;
       try {
         const res = await axios({
           url: process.env.VUE_APP_BASEURL + "/companies",
@@ -137,8 +155,6 @@ export default {
 
       } catch (err) {
         console.error("Error fetching companies:", err);
-      } finally {
-        this.page_load = false;
       }
     },
     getInitials(name) {
@@ -155,9 +171,6 @@ export default {
       this.$router.push({ name: 'Company Users', params: { id: item.id } });
     }
   },
-  mounted(){
-    this.getCompanies();
-  }
 };
 </script>
 

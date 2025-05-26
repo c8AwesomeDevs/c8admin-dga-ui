@@ -454,7 +454,7 @@ export default {
                                 this.subscriptiontype = res.data.user.subscription.subscription_type;
                                 this.expiration_dialog = true;
                             } else {
-                                this.$router.push({ name: "Branches" });
+                                this.$router.push({ name: "Company" });
                             }
                         }
                     } else {
@@ -505,7 +505,7 @@ export default {
                     this.subscriptiontype = res.data.user.subscription.subscription_type;
                     this.expiration_dialog = true;
                   } else {
-                    this.$router.push({ name: "Branches" });
+                    this.$router.push({ name: "Company" });
                   }
                 }
               } else {
