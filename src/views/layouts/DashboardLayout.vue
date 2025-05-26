@@ -12,17 +12,7 @@
       <v-divider></v-divider>
 
       <!-- Welcome Section -->
-      <v-list>
-        <v-list-item v-if="user.name" class="welcome-container":to="'/dashboard/user-profile'" @click="title = 'User-Profile'">
-          <v-list-item-avatar color="red d-flex justify-center">
-            <span style="color: white; user-select: none">{{ getInitials(user.name) }}</span>
-          </v-list-item-avatar> 
-          <v-list-item-content>
-            <v-list-item-title class="welcome-text">Welcome, {{ user.name }}!</v-list-item-title>
-            <!-- <v-list-item-subtitle class="welcome-subtext">Enjoy your analysis journey!</v-list-item-subtitle> -->
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      
 
       <v-divider></v-divider>
 
@@ -53,25 +43,7 @@
       <template v-slot:append>
         <v-list dense nav>
           <!-- subscription plan -->
-          <v-list-item v-if="user.role_id == 1" @click="showSubscription()">
-            <v-list-item-icon>
-              <v-icon>mdi-handshake</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>Subscription Plan</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <!-- FAQ -->
-          <v-list-item @click="toggleHelpDialog()">
-            <v-list-item-icon>
-              <v-icon>mdi-help</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>FAQ's</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          
 
           <!-- light/dark mode toggle -->
           <v-list-item @click="darkmode()">
@@ -314,19 +286,16 @@ export default {
 
     if (this.hasPermission('Company', ["Administrator"])) {
       this.items = [
-        { title: "Branches", icon: "mdi-cube", link: "Branches" },
-        { title: "Users", icon: "mdi-account", link: "Users" },
-        { title: "CDS Configurations", icon: "mdi-database-settings-outline", link: "CDS Configurations" },
+        { title: "All Users", icon: "mdi-account", link: "Company" },
       ];
     } else if (this.hasPermission(null, ["Administrator", "Manager"])) {
       this.items = [
-        { title: "Branches", icon: "mdi-cube", link: "Branches" },
-        { title: "Users", icon: "mdi-account", link: "Users" },
+        { title: "All Users", icon: "mdi-account", link: "Company" },
       ];
     } else {
       // This will show only "Branches" if no permissions
       this.items = [
-        { title: "Branches", icon: "mdi-cube", link: "Branches" }
+        { title: "All Users", icon: "mdi-account", link: "Company" },
       ];
     }
 
@@ -397,7 +366,7 @@ export default {
     },
   },
   /*beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next((vm) = {
       // set title based on the route name
       vm.title = to.name;
     });

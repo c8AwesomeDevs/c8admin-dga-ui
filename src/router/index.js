@@ -12,6 +12,7 @@ import Users from "@/views/Users.vue";
 import CDSConfig from "@/views/CDSConfig.vue";
 import Branches from "@/views/Branches.vue";
 import UserProfile from "@/views/UserProfile.vue";
+import Company from "@/views/Company.vue";
 
 Vue.use(VueRouter);
 
@@ -72,6 +73,12 @@ const routes = [
         name: 'CDS Configurations',
         component: CDSConfig,
         meta: { title: 'CDS Configurations' },
+      },
+      {
+        path: 'company',
+        name: 'Company',
+        component: Company,
+        meta: { title: 'Company' },
       },
       {
         path: 'user-profile',
