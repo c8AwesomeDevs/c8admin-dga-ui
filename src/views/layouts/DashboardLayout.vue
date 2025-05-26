@@ -286,7 +286,7 @@ export default {
 
     if (this.hasPermission('Company', ["Administrator"])) {
       this.items = [
-        { title: "All Users", icon: "mdi-account", link: "Company" },
+        { title: "Companies", icon: "mdi-account", link: "Company" },
       ];
     } else if (this.hasPermission(null, ["Administrator", "Manager"])) {
       this.items = [

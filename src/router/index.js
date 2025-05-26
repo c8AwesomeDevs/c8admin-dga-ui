@@ -13,6 +13,7 @@ import CDSConfig from "@/views/CDSConfig.vue";
 import Branches from "@/views/Branches.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import Company from "@/views/Company.vue";
+import CompanyUsers from "@/views/CompanyUsers.vue";
 
 Vue.use(VueRouter);
 
@@ -80,6 +81,12 @@ const routes = [
         component: Company,
         meta: { title: 'Company' },
       },
+      {
+        path: 'company-users/:id',
+        name: 'Company Users',
+        component: CompanyUsers,
+        meta: { title: 'Company Users' },
+      },      
       {
         path: 'user-profile',
         name: 'User Profile',

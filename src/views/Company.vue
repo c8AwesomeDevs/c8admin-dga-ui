@@ -1,6 +1,5 @@
 <template>
   <div class="pa-3">
-    <loading-overlay :visible="page_load" />
 
     <v-card>
       <v-sheet
@@ -41,17 +40,27 @@
             { text: 'Company Name', value: 'company_name' },
             { text: 'Country', value: 'country' },
             { text: 'Industry', value: 'industry' },
-            { text: 'Quick Actions'}
+            { text: 'Actions', value: 'actions', sortable: false }
           ]"
           :items="paginatedUsers"
           :items-per-page="rowsPerPage"
           hide-default-footer
+          item-value="id"
         >
-          <template v-slot:item.avatar="{ item }">
-            <v-avatar size="30" color="red">
-              <span style="color: white; user-select: none">{{ getInitials(item.name) }}</span>
-            </v-avatar>
-          </template>
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="item in items" :key="item.id">
+              <td class="font-sm">{{ item.company_name }}</td>
+              <td class="font-sm">{{ item.country }}</td>
+              <td class="font-sm">{{ item.industry }}</td>
+              <td class="font-sm">
+                <v-btn icon small color="primary" @click="viewCompany(item)">
+                  <v-icon small>mdi-eye</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </template>
         </v-data-table>
 
         <div class="pagination">
@@ -141,6 +150,9 @@ export default {
     },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
+    },
+    viewCompany(item) {
+      this.$router.push({ name: 'Company Users', params: { id: item.id } });
     }
   },
   mounted(){
