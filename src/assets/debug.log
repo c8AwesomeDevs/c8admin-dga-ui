@@ -1,0 +1,13 @@
+[0926/192120.969:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[0926/192149.154:WARNING:pac_file_fetcher_impl.cc(274)] SSL certificate error when fetching PAC script, aborting.
+[0926/192200.757:WARNING:pac_file_fetcher_impl.cc(274)] SSL certificate error when fetching PAC script, aborting.
+[1104/084929.315:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084932.061:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084934.338:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084935.017:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084937.284:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084939.367:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084940.040:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/084940.925:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1104/090305.774:WARNING:dns_config_service_win.cc(668)] Failed to read DnsConfig.
+[1109/121016.363:INFO:CONSOLE(1)] "Long rAF frame-time", source: file:///C:/Program%20Files/Adobe/Adobe%20Photoshop%202020/Required/www-rich-tooltips/build/external.js (1)
