@@ -103,7 +103,10 @@ export default {
       currentPage: 1,
       rowsPerPage: 10,
     };
-  },  
+  },    
+  created() {
+      this.$store.commit("setTitle", "Companies");
+  },
   async mounted() {
     const token = await initializeUsers();
     await this.makeAuthenticatedRequest(token);

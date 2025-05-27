@@ -363,7 +363,13 @@ export default {
                 this.closeLoginDialog();
                 this.googleLoading = false;
                 console.log(res.data);
-
+                
+                if (
+                  res.data.user.role.name === "System Administrator" &&
+                  this.$route.name !== "Company"
+                ) {
+                  this.$router.push({ name: "Company" });
+                }
                 // if (res.data.user.company.updated == 1) {
                 //     if (res.data.user.subscription) {
                 //         if (this.current_subscription_details) {

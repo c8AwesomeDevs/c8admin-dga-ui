@@ -274,33 +274,42 @@ export default {
       this.$vuetify.theme.dark = true;
     }
 
-    // Safely extract role and level
-    if (this.user.role && this.user.role.name) {
-      const roleParts = this.user.role.name.split(" ");
-      this.user_level = roleParts[0];
-      this.user_role = roleParts[1] || "";
-    } else {
-      this.user_level = "";  // Default safe values
-      this.user_role = "";
-    }
-
-    if (this.hasPermission('Company', ["Administrator"])) {
-      this.items = [
-        { title: "Companies", icon: "mdi-account", link: "Company" },
-      ];
-    } else if (this.hasPermission(null, ["Administrator", "Manager"])) {
-      this.items = [
-        { title: "All Users", icon: "mdi-account", link: "Company" },
-      ];
-    } else {
-      // This will show only "Branches" if no permissions
-      this.items = [
-        { title: "All Users", icon: "mdi-account", link: "Company" },
-      ];
-    }
-
+    this.items = [
+      {
+        title: "Companies",
+        icon: "mdi-account",
+        link: "Company",
+      },
+    ]
+    
     const store = JSON.parse(localStorage.getItem("user"));
-    this.showFAQ = store && store.user.is_new === "1";
+
+    // // Safely extract role and level
+    // if (this.user.role && this.user.role.name) {
+    //   const roleParts = this.user.role.name.split(" ");
+    //   this.user_level = roleParts[0];
+    //   this.user_role = roleParts[1] || "";
+    // } else {
+    //   this.user_level = "";  // Default safe values
+    //   this.user_role = "";
+    // }
+
+    // if (this.hasPermission('Company', ["Administrator"])) {
+    //   this.items = [
+    //     { title: "Companies", icon: "mdi-account", link: "Company" },
+    //   ];
+    // } else if (this.hasPermission(null, ["Administrator", "Manager"])) {
+    //   this.items = [
+    //     { title: "All Users", icon: "mdi-account", link: "Company" },
+    //   ];
+    // } else {
+    //   // This will show only "Branches" if no permissions
+    //   this.items = [
+    //     { title: "All Users", icon: "mdi-account", link: "Company" },
+    //   ];
+    // }
+
+    // this.showFAQ = store && store.user.is_new === "1";
   },
   watch: {
     "$vuetify.theme.dark": {
