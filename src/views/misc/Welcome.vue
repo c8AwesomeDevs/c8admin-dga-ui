@@ -357,19 +357,19 @@ export default {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         })
             .then((res) => {
-                // Common logic for both cases
-                window.localStorage.setItem("user", JSON.stringify(res.data));
-                this.authenticated_user = res.data;
-                this.closeLoginDialog();
-                this.googleLoading = false;
-                console.log(res.data);
-                
-                if (
-                  res.data.user.role.name === "System Administrator" &&
-                  this.$route.name !== "Company"
-                ) {
+                if ( res.data.user.role.name === "System Administrator" && this.$route.name !== "Company") {
+                  // Common logic for both cases
+                  window.localStorage.setItem("user", JSON.stringify(res.data));
+                  this.authenticated_user = res.data;
+                  this.closeLoginDialog();
+                  console.log(res.data);
                   this.$router.push({ name: "Company" });
+                }else{
+                  this.validation_dialog = true;
+                  this.dialogMessage = "You are not authorized to access this page.";
                 }
+                
+                this.googleLoading = false;
                 // if (res.data.user.company.updated == 1) {
                 //     if (res.data.user.subscription) {
                 //         if (this.current_subscription_details) {

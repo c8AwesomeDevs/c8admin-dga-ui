@@ -77,6 +77,9 @@
         ],
       };
     },
+    created() {
+      this.$store.commit("setTitle", "Company/Company Users");
+    },
     async mounted() {
       const token = await initializeUsers();
       await this.makeAuthenticatedRequest(token);
@@ -93,6 +96,11 @@
         async fetchCompanyUsers() {
             try {
                 const companyId = this.$route.params.id;
+                const companyName = await axios.get(`${process.env.VUE_APP_BASEURL}/company/${companyId}`, {
+                headers: {
+                    Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
+                },
+                });
                 const res = await axios.get(`${process.env.VUE_APP_BASEURL}/company/${companyId}/users`, {
                 headers: {
                     Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
@@ -100,7 +108,7 @@
                 });
 
                 this.users = res.data.users;
-                this.companyName = res.data.company_name;
+                this.companyName = companyName.data.company_name;
             } catch (err) {
                 console.error("Error fetching company users:", err);
             }
