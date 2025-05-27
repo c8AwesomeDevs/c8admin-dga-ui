@@ -443,27 +443,28 @@ export default {
                 this.authenticated_user = res.data;
                 this.closeLoginDialog();
                 this.googleLoading = false;
+                console.log(res.data);
 
-                if (res.data.user.company.updated == 1) {
-                    if (res.data.user.subscription) {
-                        if (this.current_subscription_details) {
-                            this.current_subscription_details_dialog = true;
-                        } else {
-                            if (res.data.user.subscription.expiration_date == dateToday) {
-                                this.username = res.data.user.name;
-                                this.subscriptiontype = res.data.user.subscription.subscription_type;
-                                this.expiration_dialog = true;
-                            } else {
-                                this.$router.push({ name: "Company" });
-                            }
-                        }
-                    } else {
-                        this.subscriptions_dialog = true;
-                    }
-                } else {
-                    this.company_details = res.data.user;
-                    this.company_details_dialog = true;
-                }
+                // if (res.data.user.company.updated == 1) {
+                //     if (res.data.user.subscription) {
+                //         if (this.current_subscription_details) {
+                //             this.current_subscription_details_dialog = true;
+                //         } else {
+                //             if (res.data.user.subscription.expiration_date == dateToday) {
+                //                 this.username = res.data.user.name;
+                //                 this.subscriptiontype = res.data.user.subscription.subscription_type;
+                //                 this.expiration_dialog = true;
+                //             } else {
+                //                 this.$router.push({ name: "Company" });
+                //             }
+                //         }
+                //     } else {
+                //         this.subscriptions_dialog = true;
+                //     }
+                // } else {
+                //     this.company_details = res.data.user;
+                //     this.company_details_dialog = true;
+                // }
             })
             .catch((err) => {
               // alert(err.response.data.error);

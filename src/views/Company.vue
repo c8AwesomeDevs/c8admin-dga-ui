@@ -1,6 +1,6 @@
 <template>
   <div class="pa-3">
-
+    <loading-overlay :visible="page_load" />
     <v-card>
       <v-sheet
         class="py-6 px-4"

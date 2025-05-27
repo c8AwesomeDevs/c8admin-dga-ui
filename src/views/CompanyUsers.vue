@@ -1,5 +1,6 @@
 <template>
     <div class="pa-3">
+      <loading-overlay :visible="page_load" />
       <v-card>
         <v-sheet class="py-6 px-4" dark color="red darken-2" style="color: white;">
           <div class="text-h6">Users in {{ companyName }}</div>
@@ -45,11 +46,18 @@
   </template>
   
   <script>
+  import LoadingOverlay from "@/components/LoadingOverlay.vue";
+  import { initializeUsers } from "@/utils/authUtils.js";
   import axios from "axios";
-  
+
   export default {
+    name: "CompanyUsers",
+    components: {
+      LoadingOverlay,
+    },
     data() {
       return {
+        page_load: true,
         companyName: '',
         users: [],
         tableSearch: '',
@@ -69,11 +77,23 @@
         ],
       };
     },
+    async mounted() {
+      const token = await initializeUsers();
+      await this.makeAuthenticatedRequest(token);
+      this.page_load = false;
+    },
     methods: {
+      async makeAuthenticatedRequest(token) {
+        if(token != null){
+          await this.fetchCompanyUsers(); 
+        }else{
+          console.log("Unauthorized");
+        }
+      },
         async fetchCompanyUsers() {
             try {
                 const companyId = this.$route.params.id;
-                const res = await axios.get(`${process.env.VUE_APP_BASEURL}/companies/${companyId}/users`, {
+                const res = await axios.get(`${process.env.VUE_APP_BASEURL}/company/${companyId}/users`, {
                 headers: {
                     Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
                 },
@@ -85,9 +105,6 @@
                 console.error("Error fetching company users:", err);
             }
         },
-    },
-    mounted() {
-      this.fetchCompanyUsers();
     },
     computed: {
         filteredUsers() {
