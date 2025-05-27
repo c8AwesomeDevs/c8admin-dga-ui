@@ -32,97 +32,16 @@
     </div>
 
     <div class="container pa-10 mt-30">
-      <v-row>
-        <!-- WHAT IS C8 VORTEX? -->
-        <v-col cols="12" sm="4">
-          <v-card>
-            <v-img height="200" src="@/assets/7.png"> </v-img>
-            <v-card-title>WHAT IS C8 VORTEX?</v-card-title>
-            <v-card-text>
-              <div class="scrollbar text-justify">
-                C8 Vortex is a transmission and distribution asset monitoring suite that allows users to monitor and analyze critical equipment in real time using built-in
-                analytics to maintain high efficiency, increase productivity, and reduce breakdowns. It includes a monitoring module for dissolved gas analysis, along with Duval's
-                diagnostic suite, which can provide critical and accurate insight into your equipment's health and empower you to make maintenance decisions before any major issues
-                arise!
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn class="darken-2 mb-1" block outlined color="indigo darken-2" rounded @click="show_ads = !show_ads">
-                <v-icon left>mdi-information-variant</v-icon> Explore
-              </v-btn>
-              <!-- <v-btn small block color="grey" class="darken-2 white--text" outlined rounded @click="show_ads = !show_ads">
-                                <v-icon left>mdi-information-variant</v-icon> Explore
-                            </v-btn> -->
-            </v-card-actions>
-          </v-card>
-        </v-col>
-        <!-- TAKE THE NEXT STEP -->
-        <v-col cols="12" sm="4">
-          <v-card>
-            <v-img height="200" src="@/assets/2.png"> </v-img>
-            <v-card-title>TAKE THE NEXT STEP</v-card-title>
-            <v-card-text>
-              <div class="scrollbar text-justify">
-                Improve your transformer maintenance practice today. Unlock operational insights and drive efficiency for your mission-critical processes with our Basic and
-                Advanced subscriptions! <br /><br />Not yet ready to commit to a long-term partnership? You try out the demo version to see what works best for your organization.
-              </div>
-            </v-card-text>
-            <div>
-              <stripe-checkout
-                ref="checkoutRef"
-                mode="subscription"
-                :pk="key"
-                :line-items="items"
-                :success-url="success_url"
-                :cancel-url="cancel_url"
-                :client-reference-id="reference_id"
-                :subscription_data:="subscription_data"
-                @loading="(v) => (loading = v)"
-              />
-            </div>
-            <!-- <v-btn class="darken-2 mb-1"  block outlined color="orange darken-2" rounded  @click="showSubscriptions()">
-                                <v-icon>mdi-gesture-tap</v-icon> Subscribe
-                            </v-btn> -->
-            <v-card-actions>
-              <div></div>
-              <v-btn class="darken-2 mb-1" block outlined color="orange darken-2" rounded @click="bookMyDemo()"> <v-icon>mdi-gesture-tap</v-icon> Register my Account </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
+      <v-row justify="center" class="d-flex">
+        <!-- SYSTEM ADMIN LOGIN -->
         <!-- GET STARTED -->
         <v-col cols="12" sm="4">
-          <v-card>
-            <v-img height="200" src="@/assets/3.png"> </v-img>
-            <v-card-title>GET STARTED</v-card-title>
-            <v-card-text>
-              <div class="scrollbar text-justify">
-                Welcome to C8 Vortex. Login or Sign up for an account and extend the life of your critical equipment with an intelligent transmission and distribution asset
-                monitoring suite.
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn class="darken-2 mb-1" block outlined color="red darken-2" rounded @click="showLogin()" v-if="!authenticated_user">
-                <v-icon left>mdi-login</v-icon>
-                LOG-IN
-              </v-btn>
-              <v-btn class="darken-2 mb-1" block outlined color="red darken-2" rounded @click="showLogin()" v-if="authenticated_user">
-                <v-icon left>mdi-login</v-icon>
-                LOG-IN
-              </v-btn>
-              <!-- <v-btn class="darken-2 mb-1"  block outlined color="red darken-2" rounded  @click="enter()" v-if="authenticated_user">
-                                <v-icon left>mdi-login</v-icon>
-                                Enter
-                            </v-btn> -->
-              <!-- <v-btn block @click="showLogin()" rounded color="red darken-2" dark v-if="!authenticated_user">
-                                <v-icon left>mdi-login</v-icon>
-                                LOG-IN/SIGN-UP
-                            </v-btn>
-                            <v-btn block @click="enter()" rounded color="red darken-2" dark v-if="authenticated_user">
-                                <v-icon left>mdi-login</v-icon>
-                                Enter
-                            </v-btn> -->
-            </v-card-actions>
-          </v-card>
+          <Login
+            :show="true"  
+            :googleLoading="googleLoading"
+            :microsoftLoading="microsoftLoading"
+            @authenticate="authenticate"
+          />
         </v-col>
       </v-row>
     </div>
@@ -454,7 +373,7 @@ export default {
                                 this.subscriptiontype = res.data.user.subscription.subscription_type;
                                 this.expiration_dialog = true;
                             } else {
-                                this.$router.push({ name: "Branches" });
+                                this.$router.push({ name: "Company" });
                             }
                         }
                     } else {
