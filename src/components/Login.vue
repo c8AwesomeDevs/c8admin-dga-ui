@@ -30,7 +30,7 @@
                     <v-btn @click="closeLogin()" text><v-icon>mdi-close</v-icon></v-btn>
                   </v-card-actions>
                   <v-list-item-title class="text-h6">
-                    Login or Sign Up
+                    Login as Admin
                   </v-list-item-title>
 
                   <v-list-item-subtitle>
