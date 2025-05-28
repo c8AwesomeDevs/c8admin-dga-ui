@@ -38,23 +38,25 @@
         <v-data-table
           :headers="[
             { text: 'Company Name', value: 'company_name' },
+            { text: 'Domain', value: 'domain' },
             { text: 'Country', value: 'country' },
             { text: 'Industry', value: 'industry' },
+            { text: 'Heard Through', value: 'hear_aboutus' },
             { text: 'Actions', value: 'actions', sortable: false }
           ]"
           :items="paginatedUsers"
-          :items-per-page="rowsPerPage"
-          hide-default-footer
           item-value="id"
         >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="item in items" :key="item.id">
               <td class="font-sm">{{ item.company_name }}</td>
+              <td class="font-sm">{{ item.domain }}</td>
               <td class="font-sm">{{ item.country }}</td>
               <td class="font-sm">{{ item.industry }}</td>
+              <td class="font-sm">{{ item.hear_aboutus }}</td>
               <td class="font-sm">
-                <v-btn icon small color="primary" @click="viewCompany(item)">
+                <v-btn icon small @click="viewCompany(item)">
                   <v-icon small>mdi-eye</v-icon>
                 </v-btn>
               </td>
@@ -63,7 +65,7 @@
         </template>
         </v-data-table>
 
-        <div class="pagination">
+        <!-- <div class="pagination">
           <span>Showing {{ pageStart + 1 }}–{{ pageEnd }} of {{ filteredUsers.length }}</span>
           <v-btn small icon @click="prevPage" :disabled="currentPage === 1">
             <v-icon>mdi-chevron-left</v-icon>
@@ -71,7 +73,7 @@
           <v-btn small icon @click="nextPage" :disabled="pageEnd >= filteredUsers.length">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
-        </div>
+        </div> -->
       </v-card-text>
     </v-card>
   </div>
@@ -92,11 +94,13 @@ export default {
       page_load: true,
       tableSearch: '',
       selectSearch: 'Company Name',
-      searchOptions: ['Company Name', 'Country', 'Industry'],
+      searchOptions: ['Company Name', 'Domain', 'Country', 'Industry', 'Heard Through'],
       fieldMap: {
         'Company Name': 'company_name',
+        'Domain': 'domain',
         'Country': 'country',
         'Industry': 'industry',
+        'Heard Through': 'hear_aboutus',
       },
       selectView: 'Show All Users',
       users: [], // Add sample data for testing
@@ -151,9 +155,11 @@ export default {
 
         this.users = res.data.map(c => ({
           ...c,
+          domain: c.domain || "-",
           company_name: c.company_name || "-",
           country: c.country || "-",
           industry: c.industry || "-",
+          hear_aboutus: c.hear_aboutus || "-",
         }));
 
       } catch (err) {
@@ -178,11 +184,11 @@ export default {
 </script>
 
 <style scoped>
-.pagination {
+/* .pagination {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 10px;
   gap: 10px;
-}
+} */
 </style>

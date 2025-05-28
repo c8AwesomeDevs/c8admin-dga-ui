@@ -34,10 +34,21 @@
             :headers="headers"
             :items="filteredUsers"
             item-value="id"
-            class="elevation-1"
           >
-            <template v-slot:item.role="{ item }">
-              <span>{{ item.role?.name || 'Not Assigned' }}</span>
+            <template v-slot:item="{ item }">
+              <tr>
+                <td class="font-sm">{{ item.name || "-" }}</td>
+                <td class="font-sm">{{ item.email || "-" }}</td>
+                <td class="font-sm">{{ item.phone_number || "-" }}</td>
+                <td class="font-sm">{{ item.account_type || "-" }}</td>
+                <td class="font-sm">{{ item.account_status || "-" }}</td>
+                <td class="font-sm">
+                  <span v-if="item.is_new === 'Yes'">Yes</span>
+                  <span v-else>No</span>
+                </td>
+                <td class="font-sm">{{ item.role?.name || 'Not Assigned' }}</td>
+
+              </tr>
             </template>
           </v-data-table>
         </v-card-text>
@@ -72,7 +83,10 @@
         headers: [
           { text: "Name", value: "name" },
           { text: "Email", value: "email" },
+          { text: "Phone No.", value: "phone_number" },
           { text: "Account Type", value: "account_type" },
+          { text: "Account Status", value: "account_status" },
+          { text: "Is New", value: "is_new" },
           { text: "Role", value: "role" },
         ],
       };
@@ -108,7 +122,15 @@
                 });
 
                 this.users = res.data.users;
-                this.companyName = companyName.data.company_name;
+                for (let user of this.users) {
+                    if(user.is_new == 1){
+                        user.is_new = "Yes";
+                    }else{
+                        user.is_new = "No";
+                    }
+                }
+
+                this.companyName = companyName.data.company_name; 
             } catch (err) {
                 console.error("Error fetching company users:", err);
             }

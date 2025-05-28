@@ -10,9 +10,9 @@
               <v-col col="12" md="5">
                 <div class="text-center mt-5 mb-2 mt-10">
                   <img v-if="!$vuetify.theme.dark" src="@/assets/c8logo-black.png" alt="" width="90"
-                    :class="{ 'login-logo': true, 'rotate': rotate, 'small': small }">
+                    :class="{ 'login-logo': true, 'rotate': rotate }">
                   <img v-if="$vuetify.theme.dark" src="@/assets/c8logo-white.png" alt="" width="90"
-                    :class="{ 'login-logo': true, 'rotate': rotate, 'small': small }">
+                    :class="{ 'login-logo': true, 'rotate': rotate }">
 
                   <div>
                     <span class="vortex">VORTEX</span>
@@ -27,7 +27,6 @@
                 <v-list-item-content class="text-center pt-0">
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn @click="closeLogin()" text><v-icon>mdi-close</v-icon></v-btn>
                   </v-card-actions>
                   <v-list-item-title class="text-h6">
                     Login as Admin
@@ -115,9 +114,6 @@ export default {
     }
   },
   methods: {
-    closeLogin() {
-      this.$emit('update:login_dialog', false);
-    },
     async signInWithGoogle() {
       this.googleLoading = true;
       const clientId = process.env.VUE_APP_GOOGLE_CLIENT_ID;

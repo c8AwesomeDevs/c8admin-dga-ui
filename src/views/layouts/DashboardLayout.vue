@@ -6,7 +6,7 @@
           <v-list-item-title>
             <img src="@/assets/logo.png" alt="" width="80" />
           </v-list-item-title>
-          <v-list-item-subtitle> Dissolved Gas Analysis </v-list-item-subtitle>
+          <v-list-item-subtitle> Admin Module </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
@@ -90,9 +90,6 @@
 </template>
 
 <style scoped>
-.custom-content {
-  flex: unset;
-}
 /* Center the text in the footer */
 .footer {
   display: flex;
