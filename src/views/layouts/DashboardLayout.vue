@@ -84,8 +84,8 @@
     <!-- <v-footer absolute class="footer mt-10 mb-1" color="transparent">
       <span class="lighten-2"> {{ new Date().getFullYear() }} — &copy; Calibr8 Systems Inc.</span>
     </v-footer> -->
-    <SubscriptionPlanDialog :dialog="subscriptionplan_dialog" @close="closeSubscriptionsDialog" :user="user"></SubscriptionPlanDialog>
-    <FAQDialog @close="toggleHelpDialog" :user="user" :show="showFAQ" />
+    <!-- <SubscriptionPlanDialog :dialog="subscriptionplan_dialog" @close="closeSubscriptionsDialog" :user="user"></SubscriptionPlanDialog> -->
+    <!-- <FAQDialog @close="toggleHelpDialog" :user="user" :show="showFAQ" /> -->
   </div>
 </template>
 
@@ -143,14 +143,14 @@
 </style>
 <script>
 import { msalInstance } from "vue-msal-browser";
-import FAQDialog from "@/components/popups/FAQDialog.vue";
-import SubscriptionPlanDialog from "@/components/popups/SubscriptionPlanDialog.vue";
+// import FAQDialog from "@/components/popups/FAQDialog.vue";
+// import SubscriptionPlanDialog from "@/components/popups/SubscriptionPlanDialog.vue";
 
 export default {
-  components: {
-    SubscriptionPlanDialog,
-    FAQDialog,
-  },
+  // components: {
+  //   SubscriptionPlanDialog,
+  //   FAQDialog,
+  // },
   data: () => ({
     drawer: null,
     page: 0,

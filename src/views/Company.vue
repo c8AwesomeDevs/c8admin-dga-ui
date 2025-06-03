@@ -64,16 +64,6 @@
           </tbody>
         </template>
         </v-data-table>
-
-        <!-- <div class="pagination">
-          <span>Showing {{ pageStart + 1 }}–{{ pageEnd }} of {{ filteredUsers.length }}</span>
-          <v-btn small icon @click="prevPage" :disabled="currentPage === 1">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-btn small icon @click="nextPage" :disabled="pageEnd >= filteredUsers.length">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </div> -->
       </v-card-text>
     </v-card>
   </div>
@@ -82,9 +72,11 @@
 <script>
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { initializeUsers, startTokenRefreshChecker } from "@/utils/authUtils.js";
+import { beforeRouteEnter } from "@/utils/routeUtils.js";
 import axios from "axios";
 
 export default {
+  beforeRouteEnter,
   name: "Company",
   components: {
     LoadingOverlay,
@@ -184,11 +176,4 @@ export default {
 </script>
 
 <style scoped>
-/* .pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 10px;
-  gap: 10px;
-} */
 </style>

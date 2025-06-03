@@ -3,7 +3,12 @@
       <loading-overlay :visible="page_load" />
       <v-card>
         <v-sheet class="py-6 px-4" dark color="red darken-2" style="color: white;">
-          <div class="text-h6">Users in {{ companyName }}</div>
+          <div class="d-flex align-center">
+            <v-btn icon small @click="goBack()" class="mr-2">
+              <v-icon medium>mdi-arrow-left</v-icon>
+            </v-btn>
+            <span class="text-h6">Users in {{ companyName }}</span>
+          </div>
         </v-sheet>
   
         <v-card-text>
@@ -59,9 +64,11 @@
   <script>
   import LoadingOverlay from "@/components/LoadingOverlay.vue";
   import { initializeUsers } from "@/utils/authUtils.js";
+  import { beforeRouteEnter, beforeRouteUpdate } from "@/utils/routeUtils.js";
   import axios from "axios";
 
   export default {
+    beforeRouteEnter, beforeRouteUpdate,
     name: "CompanyUsers",
     components: {
       LoadingOverlay,
@@ -73,12 +80,15 @@
         users: [],
         tableSearch: '',
         selectSearch: 'Name',
-        searchOptions: ['Name', 'Email', 'Account Type', 'Role'],
+        searchOptions: ['Name', 'Email', 'Phone No.', 'Account Type', 'Account Status', 'Is New', 'Account Type', 'Role'],
         fieldMap: {
-        Name: 'name',
-        Email: 'email',
-        'Account Type': 'account_type',
-        Role: 'role.name',
+          'Name': 'name',
+          'Email': 'email',
+          'Phone No.': 'phone_number',
+          'Account Type': 'account_type',
+          'Account Status': 'account_status',
+          'Is New': 'is_new',
+          'Role': 'role.name',
         },
         headers: [
           { text: "Name", value: "name" },
@@ -107,6 +117,11 @@
           console.log("Unauthorized");
         }
       },
+
+      goBack(){
+        this.$router.push({ name: "Company" });
+      },
+
         async fetchCompanyUsers() {
             try {
                 const companyId = this.$route.params.id;

@@ -207,6 +207,7 @@
 </style>
 <script>
 import { StripeCheckout } from "@vue-stripe/vue-stripe";
+import { beforeRouteEnter, beforeRouteUpdate } from "@/utils/routeUtils.js";
 import Login from "@/components/Login.vue";
 import Demo from "@/components/Demo.vue";
 import SubscriptionsDialog from "@/components/popups/SubscriptionsDialog.vue";
@@ -214,14 +215,7 @@ import CompanyDetailsDialog from "@/components/popups/CompanyDetailsDialog.vue";
 import SubscriptionDetails from "@/components/popups/SubscriptionDetails.vue";
 import axios from "axios";
 export default {
-  beforeRouteEnter(to, from, next) {
-    document.title = `C8 Vortex - ${to.meta.title || ''}`;
-    next();
-  },
-  beforeRouteUpdate(to, from, next) {
-    document.title = `C8 Vortex - ${to.meta.title || ''}`;
-    next();
-  },
+  beforeRouteEnter, beforeRouteUpdate,
   name: "Subscriptions",
   components: {
     Login,
