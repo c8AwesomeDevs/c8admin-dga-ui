@@ -2,20 +2,25 @@
   import axios from "axios";
   import store from "@/store";
 
+  export function isAdmin() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user && user.user.role === 'System Administrator';
+  }
+
   //Initializing of user in local storage, returns a token.
   export async function initializeUsers() {
-    console.log("Initializing User...");
+    console.log("Initializing...");
     const storage = JSON.parse(localStorage.getItem("user"));
     
     if (!storage || !storage.user) return;
 
     const tokenExp = JSON.parse(localStorage.getItem("token_expiry"));
-  
-    if (storage.user.account_type === 'microsoft') {
-      return await handleMicrosoftToken(storage, tokenExp);
-    } else if (storage.user.account_type === 'google') {
-      return await handleGoogleToken(storage, tokenExp);
-    }
+    
+      if (storage.user.account_type === 'microsoft') {
+        return await handleMicrosoftToken(storage, tokenExp);
+      } else if (storage.user.account_type === 'google') {
+        return await handleGoogleToken(storage, tokenExp);
+      }
   }
 
   async function handleMicrosoftToken(storage, tokenExp) {
