@@ -1,13 +1,10 @@
 <template>
   <div class="pa-3">
     <loading-overlay :visible="page_load" />
+
     <v-card>
-      <v-sheet
-        class="py-6 px-4"
-        dark
-        color="red darken-2"
-        style="color: white;"
-      >
+      <v-sheet class="py-6 px-4" dark color="red darken-2" style="color: white;">
+        <span class="text-h6">All Registered Companies</span>
       </v-sheet>
 
       <v-card-text>
@@ -36,33 +33,31 @@
         </div>
 
         <v-data-table
-          :headers="[
-            { text: 'Company Name', value: 'company_name' },
-            { text: 'Domain', value: 'domain' },
-            { text: 'Country', value: 'country' },
-            { text: 'Industry', value: 'industry' },
-            { text: 'Heard Through', value: 'hear_aboutus' },
-            { text: 'Actions', value: 'actions', sortable: false }
-          ]"
+          :headers="tableHeaders"
           :items="paginatedUsers"
           item-value="id"
         >
-        <template v-slot:body="{ items }">
-          <tbody>
-            <tr v-for="item in items" :key="item.id">
-              <td class="font-sm">{{ item.company_name }}</td>
-              <td class="font-sm">{{ item.domain }}</td>
-              <td class="font-sm">{{ item.country }}</td>
-              <td class="font-sm">{{ item.industry }}</td>
-              <td class="font-sm">{{ item.hear_aboutus }}</td>
-              <td class="font-sm">
-                <v-btn icon small @click="viewCompany(item)">
-                  <v-icon small>mdi-eye</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </template>
+          <template v-slot:body="{ items }">
+            <tbody>
+              <tr v-for="item in items" :key="item.id">
+                <td class="font-sm">{{ item.id }}</td>
+                <td class="font-sm">{{ item.company_name }}</td>
+                <td class="font-sm">{{ item.domain }}</td>
+                <td class="font-sm">{{ item.country }}</td>
+                <td class="font-sm">{{ item.industry }}</td>
+                <td class="font-sm">{{ item.hear_aboutus }}</td>
+                <td class="font-sm">{{ item.total_users }}</td>
+                <td class="font-sm">
+                  <v-btn icon small @click="viewCompany(item)">
+                    <v-icon small>mdi-account-circle</v-icon>
+                  </v-btn>
+                  <v-btn icon small @click="viewCompanyAssetHierarchy(item)">
+                    <v-icon small>mdi-office-building</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </template>
         </v-data-table>
       </v-card-text>
     </v-card>
@@ -71,49 +66,68 @@
 
 <script>
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { initializeUsers, startTokenRefreshChecker } from "@/utils/authUtils.js";
+import { initializeUsers } from "@/utils/authUtils.js";
 import { beforeRouteEnter } from "@/utils/routeUtils.js";
 import axios from "axios";
 
 export default {
-  beforeRouteEnter,
   name: "Company",
-  components: {
-    LoadingOverlay,
-  },
+  components: { LoadingOverlay },
+  beforeRouteEnter,
   data() {
     return {
       page_load: true,
       tableSearch: '',
       selectSearch: 'Company Name',
-      searchOptions: ['Company Name', 'Domain', 'Country', 'Industry', 'Heard Through'],
+      searchOptions: [
+        'Company Name',
+        'Domain',
+        'Country',
+        'Industry',
+        'Total Users',
+        'Heard Through',
+      ],
       fieldMap: {
+        'Company ID': 'id',
         'Company Name': 'company_name',
         'Domain': 'domain',
         'Country': 'country',
         'Industry': 'industry',
+        'Total Users': 'total_users',
         'Heard Through': 'hear_aboutus',
       },
-      selectView: 'Show All Users',
-      users: [], // Add sample data for testing
+      users: [],
       currentPage: 1,
       rowsPerPage: 10,
     };
-  },    
+  },
   created() {
-      this.$store.commit("setTitle", "Companies");
+    this.$store.commit("setTitle", "Companies");
   },
   async mounted() {
     const token = await initializeUsers();
     await this.makeAuthenticatedRequest(token);
     this.page_load = false;
   },
-
   computed: {
+    tableHeaders() {
+      return [
+        { text: 'Company ID', value: 'id' },
+        { text: 'Company Name', value: 'company_name' },
+        { text: 'Domain', value: 'domain' },
+        { text: 'Country', value: 'country' },
+        { text: 'Industry', value: 'industry' },
+        { text: 'Heard Through', value: 'hear_aboutus' },
+        { text: 'Total Users', value: 'total_users' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ];
+    },
     filteredUsers() {
       if (!this.tableSearch) return this.users;
       const field = this.fieldMap[this.selectSearch];
-      return this.users.filter(u => u[field]?.toLowerCase().includes(this.tableSearch.toLowerCase()));
+      return this.users.filter(user =>
+        user[field]?.toLowerCase().includes(this.tableSearch.toLowerCase())
+      );
     },
     paginatedUsers() {
       const start = (this.currentPage - 1) * this.rowsPerPage;
@@ -124,26 +138,26 @@ export default {
     },
     pageEnd() {
       return Math.min(this.currentPage * this.rowsPerPage, this.filteredUsers.length);
-    }
+    },
   },
   methods: {
     async makeAuthenticatedRequest(token) {
-      if (token != null) {
+      if (token) {
         await this.getCompanies();
-      }else{
-        console.log("Unauthorized");
+      } else {
+        console.warn("Unauthorized");
       }
     },
-
     async getCompanies() {
       try {
-        const res = await axios({
-          url: process.env.VUE_APP_BASEURL + "/companies",
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.VUE_APP_BASEURL}/companies`,
+          {
+            headers: {
+              Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
+            },
+          }
+        );
 
         this.users = res.data.map(c => ({
           ...c,
@@ -152,15 +166,11 @@ export default {
           country: c.country || "-",
           industry: c.industry || "-",
           hear_aboutus: c.hear_aboutus || "-",
+          total_users: c.users_count ?? 0,
         }));
-
       } catch (err) {
         console.error("Error fetching companies:", err);
       }
-    },
-    getInitials(name) {
-      if (!name) return '';
-      return name.split(' ').map(n => n[0]).join('').toUpperCase();
     },
     nextPage() {
       if (this.pageEnd < this.filteredUsers.length) this.currentPage++;
@@ -170,7 +180,10 @@ export default {
     },
     viewCompany(item) {
       this.$router.push({ name: 'Company Users', params: { id: item.id } });
-    }
+    },
+    viewCompanyAssetHierarchy(item) {
+      this.$router.push({ name: 'Company Asset Hierarchy', params: { id: item.id } });
+    },
   },
 };
 </script>

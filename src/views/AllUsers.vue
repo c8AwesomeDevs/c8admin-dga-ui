@@ -4,10 +4,7 @@
       <v-card>
         <v-sheet class="py-6 px-4" dark color="red darken-2" style="color: white;">
           <div class="d-flex align-center">
-            <v-btn icon small @click="goBack()" class="mr-2">
-              <v-icon medium>mdi-arrow-left</v-icon>
-            </v-btn>
-            <span class="text-h6">Users in <span style="color: lightgreen">{{ companyName }}</span></span>
+            <span class="text-h6">All Users</span>
           </div>
         </v-sheet>
   
@@ -131,7 +128,7 @@
 
   export default {
     beforeRouteEnter, beforeRouteUpdate,
-    name: "CompanyUsers",
+    name: "all-users",
     components: {
       LoadingOverlay,
     },
@@ -177,7 +174,7 @@
       };
     },
     created() {
-      this.$store.commit("setTitle", "Company/Company Users");
+      this.$store.commit("setTitle", "All Users");
     },
     async mounted() {
       const token = await initializeUsers();
@@ -187,42 +184,33 @@
     methods: {
       async makeAuthenticatedRequest(token) {
         if(token != null){
-          await this.fetchCompanyUsers(); 
+          await this.fetchAllUsers(); 
         }else{
           console.log("Unauthorized");
         }
       },
 
-      goBack(){
-        this.$router.push({ name: "Company" });
-      },
+    //   goBack(){
+    //     this.$router.push({ name: "Company" });
+    //   },
 
-        async fetchCompanyUsers() {
+        async fetchAllUsers() {
             try {
-                const companyId = this.$route.params.id;
-                const companyName = await axios.get(`${process.env.VUE_APP_BASEURL}/company/${companyId}`, {
-                headers: {
-                    Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
-                },
-                });
-                const res = await axios.get(`${process.env.VUE_APP_BASEURL}/company/${companyId}/users`, {
-                headers: {
-                    Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
-                },
+                const res = await axios.get(`${process.env.VUE_APP_BASEURL}/users-sysad`, {
+                    headers: {
+                        Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
+                    },
                 });
 
-                this.users = res.data.users;
+                this.users = res.data;
+
                 for (let user of this.users) {
-                    if(user.is_new == 1){
-                        user.is_new = "Yes";
-                    }else{  
-                        user.is_new = "No";
-                    }
+                    user.is_new = user.is_new == 1 ? "Yes" : "No";
                 }
 
-                this.companyName = companyName.data.company_name; 
+                this.companyName = "All Users"; // Or something like "System-wide"
             } catch (err) {
-                console.error("Error fetching company users:", err);
+                console.error("Error fetching all users:", err);
             }
         },
 
@@ -250,13 +238,13 @@
             });
 
             if (res.status === 200) {
-              await this.fetchCompanyUsers();
+                await this.fetchAllUsers();
               this.snackbar.text = res.data.message || "Status updated successfully.";
               this.snackbar.color = "success";
-              this.snackbar.show = true;
-
-              this.statusDialog = false;
+              this.snackbar.show = true;  
             }
+            
+            this.statusDialog = false;
           } catch (err) {
             console.error("Error saving status:", err);
 
@@ -269,6 +257,7 @@
             this.loading = false;
           }
         },
+
         confirmSave() {
           this.confirmDialog = false;
           this.saveStatus();

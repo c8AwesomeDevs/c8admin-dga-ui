@@ -3,25 +3,17 @@
     <loading-overlay :visible="page_load" />
     <v-row dense>
       <v-col cols="12" sm="6" md="2" class="pr-0 pb-0">
-        <v-card class="column-header" dense block dark color="red darken-4">Assets Hierarchy</v-card>
+        <v-card class="column-header" dense block dark color="red darken-4">
+          <v-btn icon small @click="goBack()" class="mr-2">
+            <v-icon medium>mdi-arrow-left</v-icon>
+          </v-btn>
+          Assets Hierarchy</v-card>
 
-        <v-btn v-if="hasPermission('Branch', ['Administrator'])" text small block color="#60ab91" class="darken-2"
-          @click="addRootElement()"> <v-icon>mdi-plus</v-icon> New Site Element </v-btn>
 
         <v-divider></v-divider>
-        <!--v-text-field
-          class="px-3"
-          v-model="assetSearch"
-          label='Search for Branch/Site/Substation/Transformer ...'
-          prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          clearable
-          hide-details
-          single-line
-          dense
-        ></v-text-field-->
+      
         <v-treeview class="pointer" v-if="items.length > 0" open-all :active.sync="active" v-model="tree" :items="items"
-          activatable hoverable item-key="id" @update:active="getDetails" dense>
+          activatable hoverable item-key="id" @update:active="getDetails" dense disabled>
           <template v-slot:prepend="{ item }">
             <v-icon class="pointer"> mdi-cube </v-icon>
           </template>
@@ -78,14 +70,6 @@
           <v-divider></v-divider>
 
           <v-tabs-items style="background: transparent" v-model="tab">
-
-            <template v-if="active.length == 0 && treeViewisReady == true">
-              <v-col cols="12" class="text-center ma-2 pa-5">
-                <v-alert color="red darken-3" elevation="2" colored-border>
-                  Please select your assets.
-                </v-alert>
-              </v-col>
-            </template>
 
             <!-- View Assigned Users dialog -->
             <v-dialog v-model="view_user_dialog" persistent max-width="70%">
@@ -155,67 +139,14 @@
                           <v-text-field label="Path" :disabled="loading" outlined dense hide-details
                             v-model="element.path" color="red" readonly></v-text-field>
                         </div>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="#60ab91" v-if="checkDetailPermission" :disabled="loading" text small
-                            @click="toggleUpdateModal()">Update<v-icon right dark>mdi-content-save</v-icon></v-btn>
-                        </v-card-actions>
                       </v-container>
                     </v-form>
                   </v-card>
                 </div>
               </v-container>
               <v-divider></v-divider>
-              <div style="margin-top: 5px" class="text-right">
-                <!-- <v-btn text small color="red" @click="removeChild()"> <v-icon>mdi-minus</v-icon> Delete Element </v-btn> -->
-              </div>
-              <div v-if="elements == 0">
-                <v-btn text :disabled="loading" small color="#60ab91"
-                  v-if="hasPermission('Site', ['Administrator', 'Manager'])" @click="addSubstation()">
-                  <v-icon>mdi-plus</v-icon> New Substation Element </v-btn>
-              </div>
-              <div v-if="elements == 1">
-                <v-btn :disabled="loading" text small color="#60ab91"
-                  v-if="hasPermission('Substation', ['Administrator', 'Manager'])" @click="addTransformer()">
-                  <v-icon>mdi-plus</v-icon> New Transformer Element </v-btn>
-              </div>
             </v-tab-item>
-            <!-- Summary of all transformers -->
-            <v-tab-item v-if="elements == 1 && active.length > 0" key="Status">
-              <div class="pa-3">
-                <v-row dense>
-                  <v-col cols="12" md="4" v-for="t in transformers" :key="t.id">
-                    <v-alert class="mx-auto" dense outlined text height="220" :color="t.status.normal ? 'green' : 'red'">
-                      <v-icon v-if="t.status.normal" color="green" left> mdi-check-circle-outline </v-icon>
-                      <v-icon v-if="!t.status.normal" color="red" left> mdi-car-tire-alert</v-icon>
-                      <v-card-title class="shrink-text text--primary">{{ t.name }}</v-card-title>
-
-                      <v-card-subtitle>
-                        {{ t.path.replaceAll("\\", ">") }}
-                      </v-card-subtitle>
-                      <!-- <v-card-subtitle class="text-center">
-                        C8 VORTEX ADVANCED
-                          <span class="right"><v-icon @click="closeSubs()">mdi-close</v-icon></span>
-                      </v-card-subtitle> -->
-                      <v-card-text class="text--primary">
-                        <div v-if="t.status.normal">
-                          {{ !t.latest_value ? "No Data" : "Transformer is in Good Condition." }}
-                        </div>
-                        <div v-if="!t.status.normal">
-                          {{ !t.latest_value ? "No Data" : "Transformer reached the Upper Limit." }}
-                        </div>
-                      </v-card-text>
-                      <v-divider></v-divider>
-                      <v-card-title class="shrink-text text--primary">
-                        <v-Spacer></v-Spacer>
-                        <v-btn text small @click="goToTransformer(t), (goTo = true)">Check<v-icon right
-                            dark>mdi-arrow-right</v-icon></v-btn>
-                      </v-card-title>
-                    </v-alert>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-tab-item>
+          
             <!-- Select transformer >> Click Attributes tab -->
             <v-tab-item v-if="elements == 2 && active.length > 0" key="attributes">
               <v-container>
@@ -225,7 +156,7 @@
                       <v-toolbar-title class="font text-uppercase font-weight-medium"> Transformer Element
                       </v-toolbar-title>
                       <v-spacer></v-spacer>
-                      <v-btn v-if="hasPermission('Transformer', ['Administrator', 'Manager', 'Logger'])" small
+                      <v-btn small
                         color="info" @click="openViewUsers">
                         <v-icon>mdi-account</v-icon>
                         View assigned users
@@ -245,46 +176,13 @@
                           <v-text-field label="Path" outlined dense hide-details v-model="element.path" color="red"
                             readonly></v-text-field>
                         </div>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn v-if="hasPermission('Transformer', ['Administrator', 'Manager', 'Logger'])"
-                            color="#60ab91" :disabled="loading" text small @click="toggleUpdateModal()">Update<v-icon
-                              right dark>mdi-content-save</v-icon></v-btn>
-                        </v-card-actions>
                       </v-container>
                     </v-form>
                   </v-card>
                 </div>
               </v-container>
               <v-divider></v-divider>
-              <!-- <div style="margin-top: 5px" class="text-right"> -->
-              <!-- <v-btn text small color="red" @click="removeChild()"> <v-icon>mdi-minus</v-icon> Delete Element </v-btn> -->
-              <!-- </div> -->
-              <div v-if="elements == 0">
-                <v-btn :disabled="loading" text small color="red" @click="addSubstation()"> <v-icon>mdi-plus</v-icon> New
-                  Child
-                  Element </v-btn>
-              </div>
-              <div v-if="elements == 1">
-                <v-btn :disabled="loading" text small color="red" @click="addTransformer()"> <v-icon>mdi-plus</v-icon> New
-                  Child
-                  Element </v-btn>
-              </div>
-
-              <!-- <v-container v-if="attributes.length == 0">
-                <v-btn block @click="createAttributes(element.id)">
-                  <v-icon>mdi-triangle-outline</v-icon>
-                  Create DGA Attributes
-                </v-btn>
-              </v-container> -->
-              <v-container style="position: relative; bottom: 5px">
-                <v-btn
-                  v-if="hasPermission('Transformer', ['Administrator', 'Manager', 'Logger']) && transformer_details.length == 0"
-                  block depressed color="#60ab91" dark @click="editTransformerDetails('add')">
-                  <v-icon>mdi-triangle-outline</v-icon>
-                  Create Transformer Details
-                </v-btn>
-              </v-container>
+      
               <v-container class="mb-5 mt-1" style="position: relative; bottom: 15px"
                 v-if="transformer_details.length > 0">
                 <v-card>
@@ -367,325 +265,22 @@
                           </v-textarea>
                         </v-col>
                       </v-row>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="#60ab91" v-if="hasPermission('Transformer', ['Administrator', 'Manager', 'Logger'])"
-                          :disabled="loading" text small @click="editTransformerDetails('upd')">Update<v-icon right
-                            dark>mdi-content-save</v-icon></v-btn>
-                      </v-card-actions>
                     </v-container>
                   </v-form>
                 </v-card>
               </v-container>
-              <!-- <v-container style="position: relative; bottom: 25px">
-                <v-card style="background-color: transparent">
-                  <v-card-title>DGA Attributes</v-card-title>
-                  <v-divider></v-divider>
-                  <v-simple-table style="background-color: transparent" class="scrollbar" dense>
-                    <template v-slot:default>
-                      <thead>
-                        <tr>
-                          <th class="text-left">Parameter Name</th>
-                          <th class="text-left">Description</th>
-                          <th class="text-left">Stream Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="item in attributes" :key="item.id">
-                          <td>{{ item.name }}</td>
-                          <td>{{ item.description }}</td>
-                          <td>{{ item.stream_name }}</td>
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-card>
-              </v-container> -->
+              
             </v-tab-item>
-            <!-- Select transformer >> Click Data Entry tab -->
-            <!-- <v-tab-item v-if="transformer_details.length > 0" key="adh">
-              <v-container>
-                <div class="pt-3">
-                  <ADHConfig :element="element" @open="openAdh" @close="closeAdh" @addConfig="addConfig" :adh_config="adh_config" :adh_loading="adh_loading" :ADH_dialog="ADH_dialog" ></ADHConfig>
-                </div>
-              </v-container>
-            </v-tab-item> -->
             <v-tab-item v-if="transformer_details.length > 0 && active.length > 0" key="data">
               <v-container>
-                <!-- <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      color="red"
-                      v-model="attribute_value.date"
-                      label="Date"
-                      append-icon="mdi-calendar"
-                      readonly
-                      hide-details
-                      outlined
-                      dense
-                      @click:append="datepicker = true"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      color="red"
-                      label="Time"
-                      v-model="attribute_value.time"
-                      @click:append="timepicker = true"
-                      append-icon="mdi-clock-edit-outline"
-                      readonly
-                      hide-details
-                      dense
-                      outlined
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Acetylene (C₂H₂) (ppm)" dense outlined hide-details v-model="attribute_value.acetylene" type="number"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Ethylene (C₂H₄) (ppm)" dense outlined hide-details v-model="attribute_value.ethylene" type="number"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Methane (CH₄) (ppm)" dense outlined hide-details v-model="attribute_value.methane" type="number"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Ethane (C₂H₆) (ppm)" dense outlined hide-details v-model="attribute_value.ethane" type="number"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Hydrogen (H₂) (ppm)" dense outlined hide-details v-model="attribute_value.hydrogen" type="number"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Oxygen (O₂) (ppm)" dense outlined hide-details v-model="attribute_value.oxygen" type="number"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Carbon Monoxide (CO) (ppm)" dense outlined hide-details v-model="attribute_value.carbon_monoxide" type="number"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field color="red" label="Carbon Dioxide (CO₂) (ppm)" dense outlined hide-details v-model="attribute_value.carbon_dioxide" type="number"></v-text-field>
-                  </v-col>
-                </v-row> -->
+              
 
-                <!-- <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field label="TDCG" dense outlined hide-details></v-text-field>
-                                  </v-col>
-                              </v-row>
-                          </div>
-                      </v-tab-item>
-                      <v-tab-item v-if="elements == 2" key="attributes">
-                          <v-container v-if="attributes.length == 0">
-                              <v-btn block @click="createAttributes(element.id)">
-                                  <v-icon>mdi-triangle-outline</v-icon>
-                                  Create DGA Attributes
-                              </v-btn>
-                          </v-container>
-                          <v-container style="position: relative; bottom: 5px">
-                              <v-btn v-if="transformer_details.length == 0" block @click="transformer_dialog = true">
-                                  <v-icon>mdi-triangle-outline</v-icon>
-                                  Create Transformer Details
-                              </v-btn>
-                          </v-container>
-                          <v-container style="position: relative; bottom: 15px" v-if="transformer_details.length > 0">
-                              <v-card class="pa-2" style="background-color: transparent">
-                                  <v-card-title class="pt-0">Tranformer Details</v-card-title>
-                                  <v-row>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].manufacturer"
-                                              label="Manufacturer" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].type"
-                                              label="Type" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" v-model="transformer_details[0].startup_date"
-                                              label="Commisioning Date" readonly hide-details outlined dense></v-text-field>
-                                      </v-col>
-                                  </v-row>
-
-                                  <v-row>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly
-                                              v-model="transformer_details[0].construction_year" label="Construction Year"
-                                              outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].age_band"
-                                              label="Age | Age Band" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].line_capacity"
-                                              label="Line Capacity" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                  </v-row>
-                                  <v-row>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].winding_voltage"
-                                              label="Winding Voltage" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" sm="4">
-                                          <v-textarea color="red" readonly v-model="transformer_details[0].asset_desc"
-                                              name="input-7-1" label="Asset Description" value="" rows="1" outlined dense
-                                              hide-details>
-                                          </v-textarea>
-                                      </v-col>
-                                      <v-col cols="12" sm="4">
-                                          <v-textarea color="red" readonly v-model="transformer_details[0].address"
-                                              label="Address" value="" rows="1" outlined dense hide-details>
-                                          </v-textarea>
-                                      </v-col>
-                                  </v-row>
-                                  <v-row>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly
-                                              v-model="transformer_details[0].country_manufacturer"
-                                              label="Country Manufacturer" outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].serial_no"
-                                              label="Serial No." outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" md="4">
-                                          <v-text-field color="red" readonly v-model="transformer_details[0].model_no"
-                                              label="Model No." outlined dense hide-details></v-text-field>
-                                      </v-col>
-                                  </v-row>
-                              </v-card>
-                          </v-container>
-                          <v-container style="position: relative; bottom: 25px">
-                              <v-card style="background-color: transparent">
-                                  <v-card-title>DGA Attributes</v-card-title>
-                                  <v-divider></v-divider>
-                                  <v-simple-table style="background-color: transparent" class="scrollbar" dense>
-                                      <template v-slot:default>
-                                          <thead>
-                                              <tr>
-                                                  <th class="text-left">Parameter Name</th>
-                                                  <th class="text-left">Description</th>
-                                                  <th class="text-left">Stream Name</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              <tr v-for="item in attributes" :key="item.id">
-                                                  <td>{{ item.name }}</td>
-                                                  <td>{{ item.description }}</td>
-                                                  <td>{{ item.stream_name }}</td>
-                                              </tr>
-                                          </tbody>
-                                      </template>
-                                  </v-simple-table>
-                              </v-card>
-                          </v-container>
-                      </v-tab-item>
-                      <v-tab-item v-if="transformer_details.length > 0" key="data">
-                          <v-container>
-                              <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" v-model="attribute_value.date" label="Date"
-                                          append-icon="mdi-calendar" readonly hide-details outlined dense
-                                          @click:append="datepicker = true"></v-text-field>
-                                  </v-col>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Time" value="12:30:00" v-model="attribute_value.time"
-                                          @click:append="timepicker = true" append-icon="mdi-clock-edit-outline" readonly
-                                          hide-details dense outlined>
-                                      </v-text-field>
-                                  </v-col>
-                              </v-row>
-                              <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Acetylene (C2H2)" dense outlined hide-details
-                                          v-model="attribute_value.acetylene" type="number"></v-text-field>
-                                  </v-col>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Ethylene (C2H4)" dense outlined hide-details
-                                          v-model="attribute_value.ethylene" type="number"></v-text-field>
-                                  </v-col>
-                              </v-row>
-                              <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Methane (CH4)" dense outlined hide-details
-                                          v-model="attribute_value.methane" type="number"></v-text-field>
-                                  </v-col>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Ethane (C2H6)" dense outlined hide-details
-                                          v-model="attribute_value.ethane" type="number"></v-text-field>
-                                  </v-col>
-                              </v-row>
-                              <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Hydrogen (H)" dense outlined hide-details
-                                          v-model="attribute_value.hydrogen" type="number"></v-text-field>
-                                  </v-col>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Oxygen (O2)" dense outlined hide-details
-                                          v-model="attribute_value.oxygen" type="number"></v-text-field>
-                                  </v-col>
-                              </v-row>
-                              <v-row>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Carbon Monoxide (CO)" dense outlined hide-details
-                                          v-model="attribute_value.carbon_monoxide" type="number"></v-text-field>
-                                  </v-col>
-                                  <v-col cols="12" md="6">
-                                      <v-text-field color="red" label="Carbon Dioxide (CO2)" dense outlined hide-details
-                                          v-model="attribute_value.carbon_dioxide" type="number"></v-text-field>
-                                  </v-col>
-                              </v-row> -->
-                <!-- <v-row>
-                                    <v-col cols="12" md="6">
-                                        <v-text-field label="TDCG" dense outlined hide-details></v-text-field>
-                                    </v-col>
-                                </v-row> -->
-                <!-- <v-row>
-                  <v-col cols="12" md="12">
-                    <v-btn block class="red darken-4 white--text" :disabled="loading" @click="writeData()"> Submit Data </v-btn>
-                  </v-col>
-                </v-row> -->
-
-                <div class="pt-3">
-                  <gasses-data :data="attribute_values" :hasPermission="hasPermission" @show="showgassesdata_dialog"
-                    @showDetails="showLogDetails"></gasses-data>
-                </div>
+                
               </v-container>
             </v-tab-item>
             <!-- Select transformer >> Click Quick Analysis tab -->
             <v-tab-item v-if="attribute_values.length > 0 && active.length > 0" key="analysis">
               <div class="pa-2">
-                <!-- <div class="d-flex justify-space-between align-center">
-                  <DateRangePickers storageID="dgaAnalysisPicker" @filter="filter" />
-                
-                  <template>
-                    <v-btn class="text-center">
-                      <v-menu>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn v-bind="attrs" v-on="on" text :disabled="loading">
-                            <span v-if="!loading">Export</span>
-                            <span v-else>Exporting...</span>
-                            <v-icon v-if="!loading" class="">mdi-folder-arrow-down-outline</v-icon>
-                          </v-btn>
-                        </template>
-                        <v-list>
-                          <v-list-item @click="generateCSV()">
-                            <v-list-item-title>CSV</v-list-item-title>
-                          </v-list-item>
-                          <v-list-item @click="generatePDF()">
-                            <v-list-item-title>PDF</v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
-                    </v-btn>
-                  </template>
-                </div> -->
 
                 <v-row dense>
                   <v-col class="mt-1" cols="12" md="3">
@@ -720,102 +315,6 @@
                         </v-menu>
                       </v-col>
                     </v-row>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col cols="12" md="5" class="pt-0">
-                    <!-- duvals area -->
-                    <DuvalsArea :latest_data="current" :transformer_details="transformer_details" :svgs_data="svgs" />
-                    <!-- Other Interp -->
-                  </v-col>
-                  <v-col cols="12" md="7" class="pt-0">
-                    <v-card outlined elevation="0">
-                      <!-- tabs -->
-                      <v-tabs fixed-tabs dark background-color="red darken-3" color="white" v-model="analysisTab">
-                        <v-tab key="duvalsInt"> Summary of Duvals Interpretations </v-tab>
-                        <v-tab key="ppmlevels"> PPM Levels </v-tab>
-                        <v-tab key="roclevels"> Rate of Change Levels </v-tab>
-                        <!-- <v-spacer></v-spacer> -->
-                      </v-tabs>
-
-                      <v-tabs-items v-model="analysisTab">
-                        <v-tab-item key="duvalsInt">
-                          <summary-interpretations :historical_data="data" :transformer_details="transformer_details" />
-                        </v-tab-item>
-                        <v-tab-item key="ppmlevels">
-                          <!-- gauges row 1 of 2 -->
-                          <v-row class="mt-3 mx-3 justify-center" dense>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="AcetyleneGauge" chartTitle="Acetylene" :activeTab="analysisTab"
-                                tabItem="1" type="acetylene" :latest_data="current.acetylene" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="EthyleneGauge" chartTitle="Ethylene" :activeTab="analysisTab"
-                                tabItem="1" type="ethylene" :latest_data="current.ethylene" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="MethaneGauge" chartTitle="Methane" :activeTab="analysisTab"
-                                tabItem="1" type="methane" :latest_data="current.methane" />
-                            </v-col>
-                          </v-row>
-                          <!-- gauges row 2 of 2 -->
-                          <v-row class="mt-3 mx-3 justify-center" dense>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="EthaneGauge" chartTitle="Ethane" :activeTab="analysisTab"
-                                tabItem="1" type="ethane" :latest_data="current.ethane" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="HydrogenGauge" chartTitle="Hydrogen" :activeTab="analysisTab"
-                                tabItem="1" type="hydrogen" :latest_data="current.hydrogen" />
-                            </v-col>
-                          </v-row>
-                          <!-- combined line graphs -->
-                          <MultiLineGraph canvasID="ppm" chartTitle="Parts Per Million (PPM) Levels"
-                            :historical_data="data" :showTrends="['timestamp', 'c2h2', 'c2h4', 'ch4', 'c2h6', 'h2']"
-                            trendLabels="timestamp"
-                            :legends="['', 'Acetylene(c2h2)', 'Ethylene(c2h4)', 'Methane(ch4)', 'Ethane(c2h6)', 'Hydrogen(h2)']" />
-                        </v-tab-item>
-                        <v-tab-item key="roclevels">
-                          <!-- gauges row 1 of 2 -->
-                          <v-row class="mt-3 mx-3 justify-center" dense>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="AcetyleneRocGauge" chartTitle="Acetylene ROC"
-                                :activeTab="analysisTab" tabItem="2" type="acetylene_roc"
-                                :latest_data="current.acetylene_roc" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="EthyleneRocGauge" chartTitle="Ethylene ROC"
-                                :activeTab="analysisTab" tabItem="2" type="ethylene_roc"
-                                :latest_data="current.ethylene_roc" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="MethaneRocGauge" chartTitle="Methane ROC"
-                                :activeTab="analysisTab" tabItem="2" type="methane_roc"
-                                :latest_data="current.methane_roc" />
-                            </v-col>
-                          </v-row>
-                          <!-- gauges row 2 of 2 -->
-                          <v-row class="mt-3 mx-3 justify-center" dense>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="EthaneRocGauge" chartTitle="Ethane ROC" :activeTab="analysisTab"
-                                tabItem="2" type="ethane_roc" :latest_data="current.ethane_roc" />
-                            </v-col>
-                            <v-col cols="12" md="4" class="pt-0">
-                              <PieChartAKAGuage canvasID="HydrogenRocGauge" chartTitle="Hydrogen ROC"
-                                :activeTab="analysisTab" tabItem="2" type="hydrogen_roc"
-                                :latest_data="current.hydrogen_roc" />
-                            </v-col>
-                          </v-row>
-                          <!-- combined line graphs -->
-                          <MultiLineGraph canvasID="roc" chartTitle="Rate of Change (ROC) Levels" :historical_data="data"
-                            :showTrends="['timestamp', 'c2h2_roc', 'c2h4_roc', 'ch4_roc', 'c2h6_roc', 'h2_roc']"
-                            trendLabels="timestamp"
-                            :legends="['', 'Acetylene(ROC)', 'Ethylene(ROC)', 'Methane(ROC)', 'Ethane(ROC)', 'Hydrogen(ROC)']" />
-                        </v-tab-item>
-                      </v-tabs-items>
-                    </v-card>
-                    <OtherInterpretations :latest_data="current" />
-
                   </v-col>
                 </v-row>
                 <v-row dense>
@@ -1449,19 +948,9 @@ export default {
       branchId: null,
     };
   },
-  async mounted() {
-    const token = await initializeUsers();
-
-    this.branchId = this.$route.query.branch_id; // Retrieve branch_id from URL
-    // console.log(this.branchId);
-
-    this.reversedYearsList;
-
-    // this.symbol = this.symbols[0];
-    // startTokenRefreshChecker();
-    await this.makeAuthenticatedRequest(token);
-
-    this.page_load = false;
+  mounted() {
+    this.branchId = this.$route.query.branch_id;
+    this.initializeAssets();
   },
 
   beforeDestroy() {
@@ -1538,27 +1027,6 @@ export default {
       });
       // return this.yearsList;
     },
-    checkDetailPermission() {
-      // console.log("Count: ", this.elements);
-      if (this.elements == "1") {
-        /*
-        console.log("Needed Level: Substation");
-        console.log("Current Level: ", this.user_level);
-        console.log("Has permission? ", this.hasPermission("Substation", ["Administrator", "Manager", "Logger"]));
-        */
-
-        return this.hasPermission("Substation", ["Administrator", "Manager", "Logger"]);
-
-      } else if (this.elements == "0") {
-        /*
-        console.log("Needed Level: Site");
-        console.log("Current Level: ", this.user_level);
-        console.log("Has permission? ", this.hasPermission("Site", ["Administrator", "Manager", "Logger"]));
-        */
-
-        return this.hasPermission("Site", ["Administrator", "Manager", "Logger"]);
-      }
-    },
 
   },
   created() {
@@ -1575,6 +1043,10 @@ export default {
   },
 
   methods: {
+    goBack() {
+      this.$router.back();
+    },
+
     getInitials(name) {
       if (!name || typeof name !== "string") {
         return "N/A"; // Handle cases where name is undefined/null
@@ -1625,43 +1097,6 @@ export default {
       });
     },
 
-    hasPermission(requiredLevel = null, requiredRoles = []) {
-      const levelHierarchy = [
-        "Company",
-        "Branch",
-        "Site",
-        "Substation",
-        "Transformer"
-      ];
-
-      // If no level is required, skip level check
-      const userLevelIndex = levelHierarchy.indexOf(this.user_level);
-      const requiredLevelIndex = requiredLevel ? levelHierarchy.indexOf(requiredLevel) : -1;
-      const levelMatch = requiredLevel === null || userLevelIndex <= requiredLevelIndex;
-
-      // If no roles are required, skip role check
-      const roleMatch = requiredRoles.length === 0 || requiredRoles.includes(this.user_role);
-
-      return levelMatch && roleMatch;
-    },
-
-    /*
-    getUsers(element, users, parentLookup) {
-      let assignedUsers = [];
-
-      while (element) {
-        // Get users assigned to the current element
-        const usersForElement = users.filter(user => user.assigned_element.includes(element.id));
-        assignedUsers = [...assignedUsers, ...usersForElement];
-
-        // Move to parent using lookup
-        element = parentLookup[element.id]; // Get parent from lookup
-      }
-
-      return assignedUsers;
-    },
-    */
-
     buildParentLookup(elements, parent = null, lookup = {}) {
       elements.forEach(element => {
         if (parent) {
@@ -1693,16 +1128,45 @@ export default {
     },
 
     async initializeAssets() {
-      const storage = JSON.parse(localStorage.getItem("user"));
-     
-      if (!storage || !storage.user) return;
+      if (!this.branchId) {
+        this.dialogMessage = "Missing branch ID";
+        this.validation_dialog = true;
+        return;
+      }
 
-      const tokenExp = JSON.parse(localStorage.getItem("token_expiry"));
+      try {
+        const token = JSON.parse(localStorage.getItem("user"))?.token;
 
-      if (storage.user.account_type === 'microsoft') {
-        await this.handleMicrosoftToken(storage, tokenExp);
-      } else if (storage.user.account_type === 'google') {
-        await this.handleGoogleToken(storage, tokenExp);
+        const branch = await axios({
+          url: `${process.env.VUE_APP_BASEURL}/branch/${this.branchId}`,
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const response = await axios({
+          url: `${process.env.VUE_APP_BASEURL}/hierarchy/qwe`,
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+          params: { branch_id: this.branchId },
+        });
+
+        this.branch_name = branch.data.branch_name;
+        this.$store.commit("setTitle", this.branch_name);
+
+        this.items = response.data;
+        this.treeViewisReady = true;
+
+        // Parse role
+        const roleName = JSON.parse(localStorage.getItem("user")).user.role?.name || "";
+        const splitRole = roleName.split(" ");
+        this.user_level = splitRole[0];
+        this.user_role = splitRole[1];
+        this.page_load = false;
+
+      } catch (err) {
+        console.error(err);
+        this.validation_dialog = true;
+        this.dialogMessage = "Failed to load asset data.";
       }
     },
 
@@ -1737,6 +1201,7 @@ export default {
         const split_role = this.user_full_role.split(" ")
         this.user_level = split_role[0];
         this.user_role = split_role[1];
+        this.page_load = false;
       } else {
         // this.showUnauthorizedDialog();
       }
@@ -1763,7 +1228,7 @@ export default {
     async getHierarchy(token) {
       try {
         const response = await axios({
-          url: process.env.VUE_APP_BASEURL + "/hierarchy",
+          url: process.env.VUE_APP_BASEURL + "/hierarchy/qwe",
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -1775,6 +1240,7 @@ export default {
 
         this.items = response.data;
         this.treeViewisReady = true;
+        this.page_load = false;
 
       } catch (err) {
         console.log(err);
@@ -2064,60 +1530,7 @@ export default {
           this.updateElementModal = false;
         });
     },
-    // saveElement() {
-    //   if (!this.new_element.name) {
-    //     this.validation_dialog = true;
 
-    //     this.dialogMessage = "Element name field is required.";
-    //     return;
-    //   }
-
-    //   if (this.elements == 1) {
-    //     if (!this.new_element.template_created) {
-    //       this.validation_dialog = true;
-
-    //       this.dialogMessage = "Check Create DGA Attribute.";
-    //       return;
-    //     }
-    //   }
-
-    //   this.save_loading = true;
-    //   startTokenRefreshChecker();
-    //   axios({
-    //     url: process.env.VUE_APP_BASEURL + "/elements/" + (this.element.id ? this.element.id : 0),
-    //     method: "POST",
-    //     data: this.new_element,
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       this.save_loading = false;
-    //       this.items = res.data;
-    //       // console.log(this.items);
-    //       this.element_dialog = false;
-    //       this.rootElement_dialog = false;
-
-    //       this.success_dialog = true;
-
-    //       if (this.elements === 0) {
-    //         this.successMessage = "Substation added successfully.";
-    //       } else if (this.elements === 1) {
-    //         this.successMessage = "Transformer added successfully.";
-    //       } else {
-    //         this.successMessage = "Site added successfully.";
-    //       }
-    //       this.success_dialog = true;
-    //     })
-    //     .catch((err) => {
-    //       // alert(err.response.data.message);
-    //       this.validation_dialog = true;
-    //       this.dialogMessage = err;
-    //       this.save_loading = false;
-    //     });
-    // }
-    // 
     saveElement() {
       if (!this.new_element.name) {
         this.validation_dialog = true;
@@ -2191,40 +1604,6 @@ export default {
           this.save_loading = false;
         });
     },
-    // saverootElement() {
-    //   if (!this.new_element.name) {
-    //     this.validation_dialog = true;
-
-    //     this.dialogMessage = "Element name field is required.";
-    //     return;
-    //   }
-
-    //   this.save_loading = true;
-    //   startTokenRefreshChecker();
-    //   axios({
-    //     url: process.env.VUE_APP_BASEURL + "/elements/" + (this.element.id ? this.element.id : 0),
-    //     method: "POST",
-    //     data: this.new_element,
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       this.save_loading = false;
-    //       this.items = res.data;
-    //       this.element_dialog = false;
-    //       this.rootElement_dialog = false;
-    //       this.success_dialog = true;
-    //       this.dialogMessage = `${this.items[0].name} created successfully!`;
-    //     })
-    //     .catch((err) => {
-    //       // console.log(err.response);
-    //       this.validation_dialog = true;
-    //       this.dialogMessage = err.response.data;
-    //       this.save_loading = false;
-    //     });
-    // },
 
     createAttributes(id) {
       this.loading = true;

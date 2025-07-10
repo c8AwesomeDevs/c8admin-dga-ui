@@ -166,102 +166,6 @@ export default {
       return this.$store.state.title;
     },
   },
-  // mounted() {
-  //   this.user = JSON.parse(localStorage.getItem("user")).user;
-  //   this.user_level = this.user.role.name.split(" ")[0];
-  //   this.user_role = this.user.role.name.split(" ")[1];
-    
-  //   // let token = JSON.parse(localStorage.getItem("token_expiry"));
-
-  //   // let time = token.tokenExpiry;
-
-  //   // let date = new Date(time)
-
-  //   // let localdate = date.toLocaleString();
-
-  //   // console.log(localdate);
-  //   // color theme
-  //   if (localStorage.getItem("dark-mode") === "true") {
-  //     this.$vuetify.theme.dark = true;
-  //   }
-  //   // the pages a user can interact with is based on his account_level
-  //   if (this.hasPermission('Company', ["Administrator"])) {
-  //     this.items = [
-  //       // {
-  //       //   title: "Dashboard",
-  //       //   icon: "mdi-view-dashboard-variant",
-  //       //   link: "Home",
-  //       // },
-  //       // {
-  //       //   title: "Assets",
-  //       //   icon: "mdi-cube",
-  //       //   link: "Assets",
-  //       // },
-  //       // {
-  //       //   title: "Subscription",
-  //       //   icon: "mdi-handshake",
-  //       //   link: "Subscription",
-  //       // },
-  //       {
-  //         title: "Branches",
-  //         icon: "mdi-cube",
-  //         link: "Branches",
-  //       },
-  //       {
-  //         title: "Users",
-  //         icon: "mdi-account",
-  //         link: "Users",
-  //       },
-  //       {
-  //         title: "CDS Configurations",
-  //         icon: "mdi-database-settings-outline",
-  //         link: "CDS Configurations",
-  //       },
-  //     ];
-  //   } 
-  //   else if (this.hasPermission(null, ["Administrator", "Manager"])) {
-  //     this.items = [
-  //       {
-  //         title: "Branches",
-  //         icon: "mdi-cube",
-  //         link: "Branches",
-  //       },
-  //       {
-  //         title: "Users",
-  //         icon: "mdi-account",
-  //         link: "Users",
-  //       },
-  //     ];
-  //   }
-  //   else {
-  //     this.items = [
-  //       // {
-  //       //   title: "DGA Dashboard",
-  //       //   icon: "mdi-view-dashboard-variant",
-  //       //   link: "Home",
-  //       // },
-  //       // {
-  //       //   title: "Assets",
-  //       //   icon: "mdi-cube",
-  //       //   link: "Assets",
-  //       // },
-  //       // {
-  //       //   title: "Subscription",
-  //       //   icon: "mdi-handshake",
-  //       //   link: "Subscription",
-  //       // },
-  //       {
-  //         title: "Branches",
-  //         icon: "mdi-cube",
-  //         link: "Branches",
-  //       }
-  //     ];
-  //   }
-
-  //   // determine if user needs tutorial
-  //   let store = JSON.parse(localStorage.getItem("user"));
-  //   this.showFAQ = store && store.user.is_new === "1" ? true : false;
-  // },
 
   mounted() {
     this.user = JSON.parse(localStorage.getItem("user")).user;
@@ -274,8 +178,18 @@ export default {
     this.items = [
       {
         title: "Companies",
-        icon: "mdi-account",
+        icon: "mdi-office-building-outline",
         link: "Company",
+      },
+      {
+        title: "All Users",
+        icon: "mdi-account",
+        link: "all-users",
+      },
+      {
+        title: "All Audits",
+        icon: "mdi-receipt-text-arrow-right",
+        link: "all-audits",
       },
     ]
     

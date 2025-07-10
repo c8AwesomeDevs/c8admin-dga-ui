@@ -14,7 +14,10 @@ import Branches from "@/views/Branches.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import Company from "@/views/Company.vue";
 import CompanyUsers from "@/views/CompanyUsers.vue";
-
+import CompanyAssetHierarchy from "@/views/CompanyAssetHierarchy.vue";
+import AllUsers from "@/views/AllUsers.vue";
+import Audits from "@/views/Audits.vue";
+import AllAudits from "@/views/AllAudits.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -86,7 +89,31 @@ const routes = [
         name: 'Company Users',
         component: CompanyUsers,
         meta: { title: 'Company Users' },
-      },      
+      },
+      {
+        path: 'company-asset-hierarchy/:id',
+        name: 'Company Asset Hierarchy',
+        component: CompanyAssetHierarchy,
+        meta: { title: 'Company Asset Hierarchy' },
+      },
+      {
+        path: 'all-users',
+        name: 'all-users',
+        component: AllUsers,
+        meta: { title: 'All Users' },
+      },  
+      {
+        path: 'audits/:id',
+        name: 'audits',
+        component: Audits,
+        meta: { title: 'Audits' },
+      },   
+      {
+        path: 'all-audits',
+        name: 'all-audits',
+        component: AllAudits,
+        meta: { title: 'All Audits' },
+      },         
       {
         path: 'user-profile',
         name: 'User Profile',
